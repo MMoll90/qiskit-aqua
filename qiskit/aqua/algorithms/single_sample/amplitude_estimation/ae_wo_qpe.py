@@ -194,8 +194,17 @@ class AmplitudeEstimationWithoutQPE(QuantumAlgorithm):
         return thetas[i_max]
 
     def _computer_fisher_information(self):
-        # TODO: compute fischer information
-        return 0 * self._evaluation_schedule
+        # the fisher information is infinite, since:
+        # 1) statevector simulation should return the exact value
+        # 2) statevector probabilities correspond to "infinite" shots
+        if self._quantum_instance.is_statevector:
+            return np.inf
+
+        a = self._ret['estimation']
+        shots = sum(self._ret['counts'].values())
+        fisher_information = shots / (a * (1 - a)) * sum((2 * mk + 1)**2 for mk in self._evaluation_schedule)
+
+        return fisher_information
 
     def _run(self):
         if self._quantum_instance.is_statevector:
