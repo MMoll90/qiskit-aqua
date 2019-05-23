@@ -18,6 +18,7 @@ The Amplitude Estimation Algorithm.
 import logging
 from collections import OrderedDict
 import numpy as np
+from scipy.stats import norm
 
 from qiskit import ClassicalRegister, QuantumRegister, QuantumCircuit
 from qiskit.aqua import AquaError
@@ -194,8 +195,18 @@ class AmplitudeEstimationWithoutQPE(QuantumAlgorithm):
         return thetas[i_max]
 
     def _computer_fisher_information(self):
-        # TODO: compute fischer information
-        return 0 * self._evaluation_schedule
+        # the fisher information is infinite, since:
+        # 1) statevector simulation should return the exact value
+        # 2) statevector probabilities correspond to "infinite" shots
+        if self._quantum_instance.is_statevector:
+            return np.inf
+
+        a = self._ret['estimation']
+        # Note: Assuming that all iterations have the same number of shots
+        shots = sum(self._ret['counts'][0].values())
+        fisher_information = shots / (a * (1 - a)) * sum((2 * mk + 1)**2 for mk in self._evaluation_schedule)
+
+        return fisher_information
 
     def _run(self):
         if self._quantum_instance.is_statevector:
@@ -224,6 +235,11 @@ class AmplitudeEstimationWithoutQPE(QuantumAlgorithm):
         self._ret['estimation'] = np.sin(self._ret['theta'])**2
         self._ret['mapped_value'] = self.a_factory.value_to_estimation(self._ret['estimation'])
         self._ret['fisher_information'] = self._computer_fisher_information()
-        self._ret['95%_confidence_interval'] = 0  # TODO: construct confidence interval
+
+        alpha = 0.05
+        normal_quantile = norm.ppf(1 - alpha / 2)
+        confidence_interval = self._ret['estimation'] + normal_quantile / np.sqrt(self._ret['fisher_information']) * np.array([-1, 1])
+        mapped_confidence_interval = [self.a_factory.value_to_estimation(bound) for bound in confidence_interval]
+        self._ret['95%_confidence_interval'] = mapped_confidence_interval
 
         return self._ret

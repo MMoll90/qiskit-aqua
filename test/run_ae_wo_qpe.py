@@ -9,7 +9,7 @@ from qiskit.aqua.circuits.gates import cry
 
 # the probability to be recovered
 probability = 0.3
-theta_p = 2*np.arcsin(np.sqrt(probability))
+theta_p = 2 * np.arcsin(np.sqrt(probability))
 
 
 class BernoulliAFactory(UncertaintyProblem):
@@ -69,11 +69,11 @@ m = 4
 # here, we override the standard construction of Q since we know a more efficient way
 # (exploiting the fact that A and Q are just Y-rotations)
 ae = AmplitudeEstimationWithoutQPE(m, bernoulli_a_factory, i_objective=0, q_factory=bernoulli_q_factory)
-# ae = AmplitudeEstimation(m, bernoulli_a_factory, i_objective=0, q_factory=bernoulli_q_factory)
+#ae = AmplitudeEstimation(m, bernoulli_a_factory, i_objective=0, q_factory=bernoulli_q_factory)
 
 
 result = ae.run(quantum_instance=BasicAer.get_backend('qasm_simulator'))
-# result = ae.run(quantum_instance=BasicAer.get_backend('statevector_simulator'))
+#result = ae.run(quantum_instance=BasicAer.get_backend('statevector_simulator'))
 
-print(result['estimation'])
-# print(result['mapped_value'])
+for key, value in result.items():
+    print(key, value)
