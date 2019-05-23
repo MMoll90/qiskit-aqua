@@ -63,16 +63,17 @@ bernoulli_q_factory = BernoulliQFactory(bernoulli_a_factory)
 
 
 # set number of evaluation qubits
-m = 3
+m = 4
 
 # construct amplitude estimation
 # here, we override the standard construction of Q since we know a more efficient way
 # (exploiting the fact that A and Q are just Y-rotations)
 ae = AmplitudeEstimationWithoutQPE(m, bernoulli_a_factory, i_objective=0, q_factory=bernoulli_q_factory)
-ae = AmplitudeEstimation(m, bernoulli_a_factory, i_objective=0, q_factory=bernoulli_q_factory)
+# ae = AmplitudeEstimation(m, bernoulli_a_factory, i_objective=0, q_factory=bernoulli_q_factory)
 
 
-# result = ae.run(quantum_instance=BasicAer.get_backend('qasm_simulator'))
-result = ae.run(quantum_instance=BasicAer.get_backend('statevector_simulator'))
+result = ae.run(quantum_instance=BasicAer.get_backend('qasm_simulator'))
+# result = ae.run(quantum_instance=BasicAer.get_backend('statevector_simulator'))
 
-print(result)
+print(result['estimation'])
+# print(result['mapped_value'])

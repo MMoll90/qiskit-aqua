@@ -16,6 +16,7 @@ from qiskit import compiler, BasicAer, QuantumRegister
 from qiskit.converters import circuit_to_dag
 from qiskit.transpiler import PassManager
 from qiskit.transpiler.passes import Unroller
+from qiskit.circuit.quantumregister import Qubit
 
 
 def convert_to_basis_gates(circuit):
@@ -28,7 +29,7 @@ def convert_to_basis_gates(circuit):
 
 def is_qubit(qb):
     # check if the input is a qubit, which is in the form (QuantumRegister, int)
-    return isinstance(qb, tuple) and isinstance(qb[0], QuantumRegister) and isinstance(qb[1], int)
+    return isinstance(qb, tuple) and isinstance(qb[0], QuantumRegister) and isinstance(qb[1], int) or isinstance(qb, Qubit)
 
 
 def is_qubit_list(qbs):
