@@ -75,6 +75,7 @@ class AmplitudeEstimation(QuantumAlgorithm):
         Args:
             num_eval_qubits (int): number of evaluation qubits
             a_factory (CircuitFactory): the CircuitFactory subclass object representing the problem unitary
+            i_objective (int): index of qubit representing the objective in the uncertainty problem
             q_factory (CircuitFactory): the CircuitFactory subclass object representing an amplitude estimation sample (based on a_factory)
             iqft (IQFT): the Inverse Quantum Fourier Transform pluggable component, defaults to using a standard iqft when None
         """
