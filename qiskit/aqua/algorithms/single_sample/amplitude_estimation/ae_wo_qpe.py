@@ -18,6 +18,7 @@ The Amplitude Estimation Algorithm.
 import logging
 from collections import OrderedDict
 import numpy as np
+from scipy.stats import norm
 
 from qiskit import ClassicalRegister, QuantumRegister, QuantumCircuit
 from qiskit.aqua import AquaError
@@ -233,6 +234,11 @@ class AmplitudeEstimationWithoutQPE(QuantumAlgorithm):
         self._ret['estimation'] = np.sin(self._ret['theta'])**2
         self._ret['mapped_value'] = self.a_factory.value_to_estimation(self._ret['estimation'])
         self._ret['fisher_information'] = self._computer_fisher_information()
-        self._ret['95%_confidence_interval'] = 0  # TODO: construct confidence interval
+
+        alpha = 0.05
+        normal_quantile = norm.ppf(1 - alpha / 2)
+        confidence_interval = self._ret['estimation'] + normal_quantile / np.sqrt(self._ret['fisher_information']) * np.array([-1, 1])
+        mapped_confidence_interval = [self.a_factory.value_to_estimation(bound) for bound in confidence_interval]
+        self._ret['95%_confidence_interval'] = mapped_confidence_interval
 
         return self._ret
