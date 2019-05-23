@@ -202,7 +202,8 @@ class AmplitudeEstimationWithoutQPE(QuantumAlgorithm):
             return np.inf
 
         a = self._ret['estimation']
-        shots = sum(self._ret['counts'].values())
+        # Note: Assuming that all iterations have the same number of shots
+        shots = sum(self._ret['counts'][0].values())
         fisher_information = shots / (a * (1 - a)) * sum((2 * mk + 1)**2 for mk in self._evaluation_schedule)
 
         return fisher_information
