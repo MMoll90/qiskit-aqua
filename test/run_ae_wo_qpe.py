@@ -1,8 +1,7 @@
 import numpy as np
 
 from qiskit import BasicAer
-from qiskit.aqua.algorithms.single_sample.amplitude_estimation.ae_wo_qpe import AmplitudeEstimationWithoutQPE
-from qiskit.aqua.algorithms import AmplitudeEstimation
+from qiskit.aqua.algorithms import AmplitudeEstimation, AmplitudeEstimationWithoutQPE
 from qiskit.aqua.algorithms.single_sample.amplitude_estimation.q_factory import QFactory
 from qiskit.aqua.components.uncertainty_problems import UncertaintyProblem
 from qiskit.aqua.circuits.gates import cry
